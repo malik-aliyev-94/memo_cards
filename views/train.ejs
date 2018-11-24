@@ -1,0 +1,34 @@
+<%- include('_header.js') %>
+<!-- Modal Structure -->
+<div id="modal1" class="modal bottom-sheet modal-fixed-footer">
+  <div class="modal-content">
+    <h4>vocabulary.com</h4>
+    <div class="vocabulary-data"></div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="load-from-web waves-effect waves-green btn-flat" data-id="">Load</a>
+    <a href="#" class="modal-close waves-effect waves-green btn-flat">Close</a>
+  </div>
+</div>
+
+<div>
+    <% if (count == 0) count = 1; %>
+    <% if (count > 6) count = 6; %>
+    <% count = 6; %>
+    <div id="rotator">
+        <% for(var i=0; i<count; i++) { %>
+          <div class="flip-container" data-id="">
+            <div class="flipper">
+              <div class="flex card"></div>
+            </div>
+          </div>
+        <% } %>
+    </div>
+
+    <div id="train-actions" style="text-align:center;">
+        <a class="waves-effect waves-light btn-large green status-learned"><i class="material-icons left">check</i>learned</a>
+        <a class="waves-effect waves-light btn-large red modal-trigger" href="#modal1"><i class="material-icons left">more_horiz</i>examples</a>
+        <a class="waves-effect waves-light btn-large blue show-next"><i class="material-icons right">navigate_next</i>next</a>
+    </div>
+</div>
+<%- include('_footer.js') %>

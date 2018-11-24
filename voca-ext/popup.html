@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <title>memo.cards</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        outline: none;
+      }
+      body {
+        padding: 10px;
+        min-width: 500px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      button {
+        display: block;
+        border: none;
+        background-color: cornflowerblue;
+        color: #fff;
+        font-size: 20px;
+        padding: 5px 20px;
+        float: right;
+      }
+      table {
+        width: 100%;
+        margin-top: 20px;
+      }
+      table thead th {
+        text-align: left;
+        background-color: aliceblue;
+        padding: 5px;
+      }
+      #result td {
+        width: 33.333%;
+      }
+      input {
+        border: none;
+        background-color: #fff;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 5px;
+        font-size: 16px;
+      }
+      #alert {
+        padding: 10px;
+        border: 2px solid salmon;
+        color: salmon;
+        margin-top: 20px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td><h1>memo.cards</h1></td>
+        <td style="text-align: right;"><button id="save">Save</button></td>
+      </tr>
+    </table>
+
+    <div id="alert"></div>
+
+    <table id="result">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Translit</th>
+          <th>Translation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><input type="text" /></td>
+          <td><input type="text" /></td>
+          <td><input type="text" /></td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <script src="socket.io.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

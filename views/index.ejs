@@ -1,0 +1,31 @@
+<%- include('_header.js') %>
+<div class="alert" id="new-word" style="display: none;">
+    <p>"<b></b>" added to vocabulary.</p>
+    <a class="waves-effect waves-light btn-large green action-reload">refresh</a>
+</div>
+<div>
+    <table class="highlight" id="table" cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Source</th>
+                <th>Translit</th>
+                <th>Translation</th>
+                <th>Flip</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        <% for(var i=0; i<data.length; i++) {%>
+            <tr>
+                <td><%= data[i]['source'] %></td>
+                <td><%= data[i]['translit'] %></td>
+                <td><%= data[i]['translation'] %></td>
+                <td><%= data[i]['flip'] %></td>
+                <td><%= data[i]['status'] %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+<%- include('_footer.js') %>
