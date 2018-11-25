@@ -3,15 +3,15 @@
     <p>"<b></b>" added to vocabulary.</p>
     <a class="waves-effect waves-light btn-large green action-reload">refresh</a>
 </div>
-<div>
+<div class="memo-content">
     <table class="highlight" id="table" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <th>Source</th>
                 <th>Translit</th>
                 <th>Translation</th>
-                <th>Flip</th>
                 <th>Status</th>
+                <th></th>
             </tr>
         </thead>
 
@@ -21,8 +21,21 @@
                 <td><%= data[i]['source'] %></td>
                 <td><%= data[i]['translit'] %></td>
                 <td><%= data[i]['translation'] %></td>
-                <td><%= data[i]['flip'] %></td>
-                <td><%= data[i]['status'] %></td>
+                <td>
+                <% if(data[i]['status']){ %> 
+                    <span class="new badge red" data-badge-caption="">train</span> 
+                <% } else { %>
+                    <span class="new badge green" data-badge-caption="">learned</span>
+                <% } %>
+                </td>
+                <td style="text-align: right;">
+                    <a class="dropdown-trigger btn-flat" data-target='dropdown<%= data[i]['id'] %>'><i class="material-icons">more_vert</i></a>
+                    <ul id='dropdown<%= data[i]['id'] %>' class='dropdown-content'>
+                        <li><a href="/view?id=<%= data[i]['id'] %>">View</a></li>
+                        <li><a href="/edit?id=<%= data[i]['id'] %>">Edit</a></li>
+                        <li><a href="#" data-href="/remove?id=<%= data[i]['id'] %>" class="remove-this">Remove</a></li>
+                    </ul>
+                </td>
             </tr>
         <% } %>
         </tbody>

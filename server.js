@@ -32,6 +32,58 @@ app.get('/', function(req, res, next) {
   // res.render( 'index', {data: []});
 });
 
+app.get('/edit', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
+    if (err) {
+      res.render( 'edit', {data: null});
+    }
+    res.render( 'edit', {data: row});
+  });
+});
+
+app.post('/edit', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  var data = req.body;
+  if (data.source.trim() === '' || data.translation.trim() === '') {
+    res.json({
+      result: false
+    });
+  } else {
+    db.run(`UPDATE vocabulary SET source=?, translit=?, translation=? WHERE id=?`, [data.source.trim(), data.translit.trim(), data.translation.trim(), id], function(err) {
+      if (err) {
+        return res.json({
+          result: false
+        });
+      }
+      res.json({
+        result: true,
+        affected: `Row(s) updated: ${this.changes}`
+      });
+    });
+  }
+});
+
+app.get('/remove', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  db.run('DELETE FROM vocabulary WHERE id=?',[id],(err) => {
+    if (err) {
+      res.send('fail');
+    }
+    res.send('success');
+  });
+});
+
+app.get('/view', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
+    if (err) {
+      res.render( 'view', {data: null});
+    }
+    res.render( 'view', {data: row});
+  });
+});
+
 app.get('/train', function(req, res, next) {
   db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=0`, [], (err, row) => {
     if (err) {

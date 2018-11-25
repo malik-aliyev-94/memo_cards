@@ -1,0 +1,46 @@
+<%- include('_header.js') %>
+<!-- Modal Structure -->
+<div class="memo-content">
+<% if(data) { %>
+  <h1>Edit `<%= data['source'] %>`</h1>
+  <form method="POST" action="" class="ajax-form">
+    <div class="row">
+
+        <div class="col s4">
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" name="source" value="<%= data['source'] %>">
+              <label for="autocomplete-input">Source</label>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col s4">
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" name="translit" value="<%= data['translit'] %>">
+              <label for="autocomplete-input">Translit</label>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col s4">
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="text" name="translation" value="<%= data['translation'] %>">
+              <label for="autocomplete-input">Translation</label>
+            </div>
+          </div>
+        </div>
+    
+        <div style="text-align: center;">
+          <button type="submit" class="btn btn-large blue">Save</button>
+        </div>
+    
+    </div> 
+  </form>
+<% } else { %>
+  <h3>No item found.</h3>
+<% } %>
+</div>
+<%- include('_footer.js') %>

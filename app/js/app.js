@@ -77,6 +77,9 @@ $(function(){
   });
 
   $('#table').DataTable({
+    "columnDefs": [
+      { "orderable": false, "targets": -1 }
+   ],
     "pageLength": 50,
     "fnDrawCallback": function(){
         if ( $('#table_paginate span a.paginate_button').length > 1) {
@@ -137,6 +140,7 @@ $(function(){
   });
   
   $('.modal').modal();
+  $('.dropdown-trigger').dropdown();
 
   $('.show-next').click(function(e){
     e.preventDefault();
@@ -181,12 +185,34 @@ $(function(){
   $(document).on('click', '.load-from-web ', function(e){
     e.preventDefault();
     var id = $(this).attr('data-id');
-    $('#modal1 .vocabulary-data').html(loading);
+    $('.vocabulary-data').html(loading);
     $.post('/scrap', {
       id: id
     }, function(res){
-      $('#modal1 .vocabulary-data').show().html(res);
+      $('.vocabulary-data').show().html(res);
       $('.wordPage a').attr('href', '#');
+    });
+  });
+
+  $(document).on('click', '.remove-this', function(e){
+    var path = $(this).attr('data-href');
+    $.get(path);
+    $(this).parents('tr').remove();
+    e.preventDefault();
+  });
+
+  
+
+  $('.ajax-form').on('submit', function(e){
+    e.preventDefault();
+    var data = $(this).serialize();
+    var action = $(this).attr('action');
+    $.post(action, data, function(res) {
+      if (res.result) {
+        M.toast({html: 'Successfully updated.', classes: 'success'})
+      } else {
+        M.toast({html: 'Can\'t update.', classes: 'error'})
+      }
     });
   });
 

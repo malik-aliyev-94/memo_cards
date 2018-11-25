@@ -1,0 +1,35 @@
+<%- include('_header.js') %>
+<!-- Modal Structure -->
+<div class="memo-content">
+<% if(data) { %>
+  <h1>View `<%= data['source'] %>`</h1>
+
+  <table>
+    <thead>
+      <tr>
+          <th>Source</th>
+          <th>Translit</th>
+          <th>Translation</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr class="view">
+        <td><%= data['source'] %></td>
+        <td><%= data['translit'] %></td>
+        <td><%= data['translation'] %></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>vocabulary.com</h3>
+  <div class='vocabulary-data bordered'>
+    <%- data['examples'] %>
+  </div>
+  <div style="text-align: center; padding-top: 20px;">
+      <a href="#" class="btn btn-large blue load-from-web" data-id="<%= data['id'] %>">Load</a>
+    </div>
+<% } else { %>
+<h3>No item found.</h3>
+<% } %>
+</div>
+<%- include('_footer.js') %>
