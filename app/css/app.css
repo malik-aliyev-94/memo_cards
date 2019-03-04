@@ -185,3 +185,23 @@ tr.view td {
   background-color: #ff6d00;
   color: #fff;
 }
+
+#actions {
+  padding: 30px;
+  background: rgba(0,0,0,.7);
+  position: fixed;
+  z-index: 9999;
+  top: 10px;
+  right: 10px;
+  /* width: 250px; */
+  border-radius: 10px;
+  text-align: center;
+  display: none;
+}
+  #actions button:first-child {
+    margin-right: 30px;
+  }
+
+.no-bg {
+  background-image: none !important;
+}

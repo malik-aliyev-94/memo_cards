@@ -61,7 +61,7 @@
     },
     "win": {
       "target": "squirrel",
-      "icon": "build/icon.ico"
+      "icon": "build/icon.icon"
     },
     "extraResources": ["app.db"]
   }

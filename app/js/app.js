@@ -78,7 +78,8 @@ $(function(){
 
   $('#table').DataTable({
     "columnDefs": [
-      { "orderable": false, "targets": -1 }
+      { "orderable": false, "targets": -1 },
+      { "orderable": false, "targets": 0 }
    ],
     "pageLength": 50,
     "fnDrawCallback": function(){
@@ -171,7 +172,7 @@ $(function(){
     $.post('/update', {
       id: $('.flip-container').attr('data-id'),
       flip: $('.flip-container').hasClass('hover') ? 1 : 0,
-      status: 1
+      status: 2
     }, function(){
       // location.reload();
     });
@@ -208,12 +209,56 @@ $(function(){
     var data = $(this).serialize();
     var action = $(this).attr('action');
     $.post(action, data, function(res) {
+      console.log(res);
       if (res.result) {
-        M.toast({html: 'Successfully updated.', classes: 'success'})
+        M.toast({html: 'Success.', classes: 'success'});
+        if ( res.id ) {
+          window.location = '/edit?id='+res.id;
+        }
       } else {
-        M.toast({html: 'Can\'t update.', classes: 'error'})
+        M.toast({html: 'Error(s) occured.', classes: 'error'})
       }
     });
   });
+
+  $(document).on('change', '.check-word', function(){
+    var checkedWords = $('.check-word:checked');
+    if ( checkedWords.length ) $('#actions').show();
+    else $('#actions').hide();
+  });
+
+  $(document).on('click', '.delete-selected', function(){
+    var checkedWords = $('.check-word:checked');
+    var ids = [];
+
+    checkedWords.each(function(){
+      $(this).parents('tr').remove();
+      ids.push( $(this).val() );
+    });
+
+    $.get('/remove-selected?ids='+ids.join(','));
+    $('#actions').hide();
+  });
+
+  $(document).on('click', '.train-selected', function(){
+    var checkedWords = $('.check-word:checked');
+    var ids = [];
+
+    checkedWords.each(function(){
+      ids.push( $(this).val() );
+    });
+
+    $.post('/train?ids='+ids.join(','), function(res) {
+      if ( res == 'success') {
+        $('#actions').hide();
+        window.location = '/train';
+      } else {
+        M.toast({html: 'Error(s) occured.', classes: 'error'})
+      }
+    });
+    
+  });
+
+  
 
 });

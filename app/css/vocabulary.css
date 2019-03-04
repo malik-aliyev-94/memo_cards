@@ -137,15 +137,14 @@ body.with-light-header.with-tab-dictionary header.page-header.fixed {
 }
 
 .wordPage h1 {
+  display: none;
   margin: 0 0 10px 0;
   letter-spacing: 0;
   font-size: 8em;
   text-transform: none;
   color: black;
   font-weight: 300;
-  display: block;
   width: 100%;
-  display: block;
   white-space: nowrap
 }
 

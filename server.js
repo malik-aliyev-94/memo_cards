@@ -9,7 +9,7 @@ var sqlite3 = require('sqlite3');
 var rp = require('request-promise');
 var $ = require('cheerio');
 
-console.log(path.join(__dirname, '..', 'files', 'app.db'));
+// console.log(path.join(__dirname, '..', 'files', 'app.db'));
 var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar', ''), (err) => {
   if (err) {
     return console.error(err.message);
@@ -50,8 +50,9 @@ app.post('/edit', function(req, res, next) {
       result: false
     });
   } else {
-    db.run(`UPDATE vocabulary SET source=?, translit=?, translation=? WHERE id=?`, [data.source.trim(), data.translit.trim(), data.translation.trim(), id], function(err) {
+    db.run(`UPDATE vocabulary SET source=?, translit=?, translation=?, synonyms=?, antonyms=?, context=? WHERE id=?`, [data.source.trim(), data.translit.trim(), data.translation.trim(), data.synonyms.trim(), data.antonyms.trim(), data.context.trim(), id], function(err) {
       if (err) {
+        console.log(err);
         return res.json({
           result: false
         });
@@ -64,11 +65,54 @@ app.post('/edit', function(req, res, next) {
   }
 });
 
+app.get('/create', function(req, res, next) {
+  res.render( 'create');
+});
+
+app.post('/create', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  var data = req.body;
+  if (data.source.trim() === '' || data.translation.trim() === '') {
+    res.json({
+      result: false
+    });
+  } else {
+
+    db.run(`INSERT INTO vocabulary(source, translit, translation, synonyms, antonyms, context) VALUES(?, ?, ?, ?, ?, ?)`, [data['source'], data['translit'], data['translation'], data['synonyms'], data['antonyms'], data['context']], function(err) {
+      if (err) {
+        console.log(err);
+        return res.json({
+          result: false
+        });
+      }
+
+      // res.redirect('/edit?id='+this.lastID);
+      res.json({
+        result: true,
+        affected: `Row(s) updated: ${this.changes}`,
+        id: this.lastID
+      });
+    });
+
+  }
+});
+
 app.get('/remove', function(req, res, next) {
   var id = req.query.id ? parseInt(req.query.id) : 0;
   db.run('DELETE FROM vocabulary WHERE id=?',[id],(err) => {
     if (err) {
       res.send('fail');
+    }
+    res.send('success');
+  });
+});
+
+app.get('/remove-selected', function(req, res, next) {
+  var ids = req.query.ids ? req.query.ids : 0;
+  db.run('DELETE FROM vocabulary WHERE id IN ('+ids+')', [] , (err) => {
+    if (err) {
+      console.log(err);
+      return res.send('fail');
     }
     res.send('success');
   });
@@ -85,7 +129,7 @@ app.get('/view', function(req, res, next) {
 });
 
 app.get('/train', function(req, res, next) {
-  db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=0`, [], (err, row) => {
+  db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=1`, [], (err, row) => {
     if (err) {
       return console.log(err.message);
     }
@@ -94,14 +138,25 @@ app.get('/train', function(req, res, next) {
       count: row['count']
     });
   });
+});
+
+app.post('/train', function(req, res, next) {
+  var ids = req.query.ids ? req.query.ids : 0;
   
+  db.run('UPDATE vocabulary SET status=1 WHERE id IN ('+ids+')', [] , (err) => {
+    if (err) {
+      console.log(err);
+      return res.send('fail');
+    }
+    res.send('success');
+  });
 });
 
 app.get('/random', function(req, res, next) {
   var except = req.query.except ? req.query.except : '[]';
   var exceptArr = JSON.parse(except);
   var result = {};
-  db.get('SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=0) as count FROM vocabulary WHERE status=0 AND id NOT IN('+exceptArr.join(',')+') ORDER BY RANDOM() LIMIT 1', [], (err, row) => {
+  db.get('SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=0) as count FROM vocabulary WHERE status=1 AND id NOT IN('+exceptArr.join(',')+') ORDER BY RANDOM() LIMIT 1', [], (err, row) => {
     if (err) {
       return console.log(err.message);
     }

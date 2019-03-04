@@ -36,8 +36,8 @@ function modifyDOM() {
     // if ( docHost.includes('vocabulary.com') || docHost.includes('translate.google.') ) {
     if ( docHost.includes('translate.google.') ) {
         var source =  document.querySelector('textarea#source').value;
-        var translation = document.querySelector('#gt-res-dir-ctr #result_box span').innerHTML;
-        var translit = document.querySelector('#src-translit').innerHTML;
+        var translation = document.querySelector('.tlid-translation.translation span').innerText;
+        var translit = document.querySelector('.tlid-transliteration-content.transliteration-content.full').innerHTML;
         var result = {
             error: false,
             message: '',

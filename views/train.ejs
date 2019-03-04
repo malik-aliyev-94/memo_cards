@@ -11,24 +11,34 @@
   </div>
 </div>
 
-<div class="memo-content">
-    <% if (count == 0) count = 1; %>
-    <% if (count > 6) count = 6; %>
-    <% count = 6; %>
-    <div id="rotator">
-        <% for(var i=0; i<count; i++) { %>
-          <div class="flip-container" data-id="">
-            <div class="flipper">
-              <div class="flex card"></div>
+<% if (count == 0) { %>
+  <div style="max-width: 600px; padding: 30px; text-align: center; font-size: 20px; border: 2px solid #cc0000; margin: 50px auto;">
+    <p>No data available to train. Please check and add words to training list.</p>
+    <a href="/" class="waves-effect waves-light btn-large blue">Go back</a>
+  </div>
+<% } else { %>
+  <div class="memo-content">
+      <% if (count == 0) count = 1; %>
+      <% if (count > 6) count = 6; %>
+      <% count = 6; %>
+      <div id="rotator">
+          <% for(var i=0; i<count; i++) { %>
+            <div class="flip-container" data-id="">
+              <div class="flipper">
+                <div class="flex card"></div>
+              </div>
             </div>
-          </div>
-        <% } %>
-    </div>
+          <% } %>
+      </div>
+  
+      <div id="train-actions" style="text-align:center;">
+          <a class="waves-effect waves-light btn-large green status-learned"><i class="material-icons left">check</i>learned</a>
+          <a class="waves-effect waves-light btn-large red modal-trigger" href="#modal1"><i class="material-icons left">more_horiz</i>examples</a>
+          <a class="waves-effect waves-light btn-large blue show-next"><i class="material-icons right">navigate_next</i>next</a>
+      </div>
+  </div>
+<% } %>
 
-    <div id="train-actions" style="text-align:center;">
-        <a class="waves-effect waves-light btn-large green status-learned"><i class="material-icons left">check</i>learned</a>
-        <a class="waves-effect waves-light btn-large red modal-trigger" href="#modal1"><i class="material-icons left">more_horiz</i>examples</a>
-        <a class="waves-effect waves-light btn-large blue show-next"><i class="material-icons right">navigate_next</i>next</a>
-    </div>
-</div>
+
+
 <%- include('_footer.js') %>

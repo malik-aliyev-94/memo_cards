@@ -1,12 +1,10 @@
 <%- include('_header.js') %>
 <!-- Modal Structure -->
 <div class="memo-content">
-<% if(data) { %>
   <form method="POST" action="" class="ajax-form">
-    
     <div style="padding: 30px 0;">
       <a href="/"><i class="material-icons dp48" style="font-size: 35px;">arrow_back</i></a>
-      <h3 style="display: inline-block; margin: 0;">Edit `<%= data['source'] %>`</h3>  
+      <h3 style="display: inline-block; margin: 0;">Add new</h3>  
       <button type="submit" class="btn blue" style="display: inline-block; vertical-align: bottom; margin-left: 30px;">Save</button>
     </div>
 
@@ -15,7 +13,7 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="source" value="<%= data['source'] %>">
+              <input type="text" name="source" value="">
               <label for="autocomplete-input">Source</label>
             </div>
           </div>
@@ -24,7 +22,7 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="translit" value="<%= data['translit'] %>">
+              <input type="text" name="translit" value="">
               <label for="autocomplete-input">Translit</label>
             </div>
           </div>
@@ -33,7 +31,7 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="translation" value="<%= data['translation'] %>">
+              <input type="text" name="translation" value="">
               <label for="autocomplete-input">Translation</label>
             </div>
           </div>
@@ -46,7 +44,7 @@
         <div class="col s6">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="synonyms" value="<%= data['synonyms'] %>">
+              <input type="text" name="synonyms" value="">
               <label for="autocomplete-input">Synonyms</label>
             </div>
           </div>
@@ -55,7 +53,7 @@
         <div class="col s6">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="antonyms" value="<%= data['antonyms'] %>">
+              <input type="text" name="antonyms" value="">
               <label for="autocomplete-input">Antonyms</label>
             </div>
           </div>
@@ -68,7 +66,7 @@
         <div class="col s12">
           <div class="row">
             <div class="input-field col s12">
-              <textarea id="textarea1" name="context" class="materialize-textarea"><%= data['context'] %></textarea>
+              <textarea id="textarea1" name="context" class="materialize-textarea"></textarea>
               <label for="autocomplete-input">Context</label>
             </div>
           </div>
@@ -79,17 +77,5 @@
         </div> -->
     </div> 
   </form>
-
-  <div style="padding: 30px 0;">
-    <h3 style="display: inline-block; margin: 0;">vocabulary.com</h3>  
-    <a style="display: inline-block; vertical-align: text-bottom; margin-left: 30px;" href="#" class="btn btn-small blue load-from-web" data-id="<%= data['id'] %>">Load</a>
-  </div>
-  <div class='vocabulary-data bordered'>
-    <%- data['examples'] %>
-  </div>
-
-<% } else { %>
-  <h3>No item found.</h3>
-<% } %>
 </div>
-<%- include('_footer.js') %>
+<%- include('_footer.js') %></div>
