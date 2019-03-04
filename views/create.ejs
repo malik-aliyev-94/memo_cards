@@ -1,9 +1,10 @@
-<%- include('_header.js') %>
+<!-- include('_header.js') -->
+
 <!-- Modal Structure -->
 <div class="memo-content">
-  <form method="POST" action="" class="ajax-form">
+  <form method="POST" action="/create" class="ajax-form">
     <div style="padding: 30px 0;">
-      <a href="/"><i class="material-icons dp48" style="font-size: 35px;">arrow_back</i></a>
+      <!-- <a href="/"><i class="material-icons dp48" style="font-size: 35px;">arrow_back</i></a> -->
       <h3 style="display: inline-block; margin: 0;">Add new</h3>  
       <button type="submit" class="btn blue" style="display: inline-block; vertical-align: bottom; margin-left: 30px;">Save</button>
     </div>
@@ -13,8 +14,8 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="source" value="">
-              <label for="autocomplete-input">Source</label>
+              <input type="text" name="source" id="i1" value="">
+              <label for="i1">Source</label>
             </div>
           </div>
         </div>
@@ -22,8 +23,8 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="translit" value="">
-              <label for="autocomplete-input">Translit</label>
+              <input type="text" name="translit" id="i2" value="">
+              <label for="i2">Translit</label>
             </div>
           </div>
         </div>
@@ -31,8 +32,8 @@
         <div class="col s4">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="translation" value="">
-              <label for="autocomplete-input">Translation</label>
+              <input type="text" name="translation" id="i3" value="">
+              <label for="i3">Translation</label>
             </div>
           </div>
         </div>
@@ -44,8 +45,8 @@
         <div class="col s6">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="synonyms" value="">
-              <label for="autocomplete-input">Synonyms</label>
+              <input type="text" name="synonyms" id="i4" value="">
+              <label for="i4">Synonyms</label>
             </div>
           </div>
         </div>
@@ -53,8 +54,8 @@
         <div class="col s6">
           <div class="row">
             <div class="input-field col s12">
-              <input type="text" name="antonyms" value="">
-              <label for="autocomplete-input">Antonyms</label>
+              <input type="text" name="antonyms" id="i5" value="">
+              <label for="i5">Antonyms</label>
             </div>
           </div>
         </div>
@@ -66,8 +67,8 @@
         <div class="col s12">
           <div class="row">
             <div class="input-field col s12">
-              <textarea id="textarea1" name="context" class="materialize-textarea"></textarea>
-              <label for="autocomplete-input">Context</label>
+              <textarea id="i6" name="context" class="materialize-textarea"></textarea>
+              <label for="i6">Context</label>
             </div>
           </div>
         </div>
@@ -78,4 +79,5 @@
     </div> 
   </form>
 </div>
-<%- include('_footer.js') %></div>
+
+<!-- include('_footer.js') -->

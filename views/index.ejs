@@ -4,57 +4,25 @@
     <a class="waves-effect waves-light btn-large green action-reload">refresh</a>
 </div>
 <div class="memo-content">
-
-    <!-- <div class="row">
-        <div class="col s6">
-            <h1>Vocabulary</h1>
+    <div style="position: relative;">
+        <div style="position: absolute; top: 40px;">
+            <span style="float: left; color: #fff; margin-left: 0;" class="badge blue"><%= stat.all %></span>
+            <span style="float: left; color: #fff;" class="badge green"><%= stat.learned %></span>
+            <span style="float: left; color: #fff;" class="badge orange"><%= stat.training %></span>
+            <span style="float: left; color: #fff;" class="badge red"><%= stat.must %></span>
         </div>
-        <div class="col s6" style="text-align: right;">
-            <button class="waves-effect waves-light btn"  id="actions" style="display: none;">Delete / Train</button>
-        </div>
-    </div> -->
+    </div>
 
     <div id="actions">
         <button class="waves-effect waves-light btn red delete-selected">Delete</button>
         <button class="waves-effect waves-light btn train-selected">Train</button>
     </div>
 
-
-    <!-- <div style="padding: 50px 0;">
-        <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-
-        <div id="modal1" class="modal modal-fixed-footer">
-            <div class="modal-content">
-                <h4>Modal Header</h4>
-                <p>A bunch of text</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, commodi officiis eligendi consequatur, doloribus porro similique, atque ea animi quia numquam ex quam earum quaerat ut? Aperiam voluptatem odio accusamus.</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
-            </div>
-        </div>
-    </div> -->
-
     <table class="highlight" id="table" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <th class="no-bg"></th>
                 <th>Source</th>
-                <!-- <th>Translit</th> -->
                 <th>Translation</th>
                 <th>Status</th>
                 <th></th>
@@ -71,7 +39,6 @@
                     </label>
                 </td>
                 <td><%= data[i]['source'] %></td>
-                <!-- <td><%= data[i]['translit'] %></td> -->
                 <td><%= data[i]['translation'] %></td>
                 <td>
                 <% if(data[i]['status'] == 2){ %> 
@@ -85,8 +52,11 @@
                 <td style="text-align: right;">
                     <a class="dropdown-trigger btn-flat" data-target='dropdown<%= data[i]['id'] %>'><i class="material-icons">more_vert</i></a>
                     <ul id='dropdown<%= data[i]['id'] %>' class='dropdown-content'>
-                        <li><a href="/view?id=<%= data[i]['id'] %>">View</a></li>
-                        <li><a href="/edit?id=<%= data[i]['id'] %>">Edit</a></li>
+                        <li><a class="modal-trigger load-content" data-href="/view?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1">View</a></li>
+                        <li><a class="modal-trigger load-content" data-href="/edit?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1">Edit</a></li>
+                        
+                        <!-- <li><a href="/view?id=<%= data[i]['id'] %>">View</a></li> -->
+                        <!-- <li><a href="/edit?id=<%= data[i]['id'] %>">Edit</a></li> -->
                         <li><a href="#" data-href="/remove?id=<%= data[i]['id'] %>" class="remove-this">Remove</a></li>
                     </ul>
                 </td>

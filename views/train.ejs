@@ -18,11 +18,8 @@
   </div>
 <% } else { %>
   <div class="memo-content">
-      <% if (count == 0) count = 1; %>
-      <% if (count > 6) count = 6; %>
-      <% count = 6; %>
       <div id="rotator">
-          <% for(var i=0; i<count; i++) { %>
+          <% for(var i=0; i<6; i++) { %>
             <div class="flip-container" data-id="">
               <div class="flipper">
                 <div class="flex card"></div>
@@ -38,7 +35,5 @@
       </div>
   </div>
 <% } %>
-
-
 
 <%- include('_footer.js') %>

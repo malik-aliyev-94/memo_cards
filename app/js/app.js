@@ -98,7 +98,7 @@ $(function(){
         "lengthMenu":       "",
         "loadingRecords":   "Loading...",
         "processing":       "Processing...",
-        "search":           "",
+        "search":           "Search",
         "zeroRecords":      "No matching records found",
         "paginate": {
             "first":        "First",
@@ -202,9 +202,23 @@ $(function(){
     e.preventDefault();
   });
 
-  
 
-  $('.ajax-form').on('submit', function(e){
+
+  // $('.load-content').click(function(){
+  //   var href = $(this).attr('data-href');
+  //   var c = $($(this).attr('data-c'));
+  //   c.html(loading);
+  //   $.get(href, function(res) {
+  //     c.html(res);
+  //     M.updateTextFields();
+
+  //     if ( $('textarea').length )
+  //       M.textareaAutoResize($('textarea'));
+  //   })
+  // });
+
+  
+  $(document).on('submit', '.ajax-form', function(e){
     e.preventDefault();
     var data = $(this).serialize();
     var action = $(this).attr('action');
@@ -213,13 +227,23 @@ $(function(){
       if (res.result) {
         M.toast({html: 'Success.', classes: 'success'});
         if ( res.id ) {
-          window.location = '/edit?id='+res.id;
+          var href = '/edit?id='+res.id;
+          var c = $('.modal-content');
+          c.html(loading);
+          $.get(href, function(res) {
+            c.html(res);
+            M.updateTextFields();
+
+            if ( $('textarea').length )
+              M.textareaAutoResize($('textarea'));
+          })
+          // window.location = '/edit?id='+res.id;
         }
       } else {
         M.toast({html: 'Error(s) occured.', classes: 'error'})
       }
     });
-  });
+  })
 
   $(document).on('change', '.check-word', function(){
     var checkedWords = $('.check-word:checked');
@@ -259,6 +283,17 @@ $(function(){
     
   });
 
-  
+  $('.load-content').click(function(){
+    var href = $(this).attr('data-href');
+    var c = $($(this).attr('data-c'));
+    c.html(loading);
+    $.get(href, function(res) {
+      c.html(res);
+      M.updateTextFields();
+
+      if ( $('textarea').length )
+        M.textareaAutoResize($('textarea'));
+    })
+  });
 
 });

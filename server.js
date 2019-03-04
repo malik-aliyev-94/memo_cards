@@ -27,7 +27,23 @@ app.get('/', function(req, res, next) {
     if (err) {
       res.render( 'index', {data: []});
     }
-    res.render( 'index', {data: rows});
+
+    var training = rows.filter((row) => {
+      return row.status == 1
+    });
+
+    var learned = rows.filter((row) => {
+      return row.status == 2
+    });
+
+    var stat = {
+      all: rows.length,
+      training: training.length,
+      learned: learned.length,
+      must: rows.length - (training.length + learned.length)
+    }
+
+    res.render( 'index', {data: rows, stat});
   });
   // res.render( 'index', {data: []});
 });
