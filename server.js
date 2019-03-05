@@ -201,7 +201,16 @@ app.post('/update', function(req, res, next) {
     console.log(`Row(s) updated: ${this.changes}`);
   });
   res.json([req.body, req.query]);
+});
 
+app.post('/update-status', function(req, res, next) {
+  db.run(`UPDATE vocabulary SET status=?`, [req.body.status], function(err) {
+    if (err) {
+      return console.error(err.message);
+    }
+    console.log(`Row(s) updated: ${this.changes}`);
+  });
+  res.json([req.body, req.query]);
 });
 
 app.post('/scrap', function(req, res, next) {

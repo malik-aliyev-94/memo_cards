@@ -14,14 +14,22 @@
     </div>
 
     <div id="actions">
-        <button class="waves-effect waves-light btn red delete-selected">Delete</button>
-        <button class="waves-effect waves-light btn train-selected">Train</button>
+        <button class="waves-effect waves-light btn black delete-selected">Delete</button>
+        <button class="waves-effect waves-light btn orange train-selected">Train</button>
+        <br>
+        <button class="waves-effect waves-light btn green set-learned">Learned</button>
+        <button class="waves-effect waves-light btn red set-must">Must be learned</button>
     </div>
 
     <table class="highlight" id="table" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th class="no-bg"></th>
+                <th class="no-bg" style="padding-left: 10px;">
+                    <label>
+                        <input type="checkbox" class="check-all" value="" />
+                        <span></span>
+                    </label>
+                </th>
                 <th>Source</th>
                 <th>Translation</th>
                 <th>Status</th>

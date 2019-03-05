@@ -171,7 +171,7 @@ table.dataTable.no-footer {
   padding-bottom: 100px;
 }
 tr.view td {
-  font-size: 30px;
+  font-size: 16px;
 }
 .bordered {
   border: 1px solid #ccc;
@@ -187,7 +187,7 @@ tr.view td {
 }
 
 #actions {
-  padding: 30px;
+  padding: 20px;
   background: rgba(0,0,0,.7);
   position: fixed;
   z-index: 9999;
@@ -197,10 +197,15 @@ tr.view td {
   border-radius: 10px;
   text-align: center;
   display: none;
+  letter-spacing: -5px;
 }
-  #actions button:first-child {
-    margin-right: 30px;
+  #actions button {
+    width: 200px;
+    margin: 5px;
   }
+  /* #actions button:first-child {
+    margin-right: 30px;
+  } */
 
 .no-bg {
   background-image: none !important;
