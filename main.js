@@ -9,7 +9,7 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800, 
+    width: 900, 
     height: 600, 
     icon: path.join(__dirname, 'app/icons/png/64x64.png')
   })

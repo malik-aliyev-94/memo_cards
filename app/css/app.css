@@ -217,4 +217,17 @@ tr.view td {
 
 #table tbody tr td:last-child {
   text-align: right !important;
+  white-space: nowrap;  
 }
+
+#table tbody tr td.dataTables_empty {
+  text-align: center !important; 
+}
+
+.pronounce {
+  margin-left: 3px;
+  cursor: pointer;
+}
+  .pronounce i {
+    font-size: 18px;
+  }

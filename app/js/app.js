@@ -350,4 +350,25 @@ $(function(){
     state.row = $(this).parents('tr');
   });
 
+
+  function pronounce(word, lang) {
+    var msg = new SpeechSynthesisUtterance(word);
+    if (lang) msg.lang = lang; //'ru-RU'
+    window.speechSynthesis.speak(msg);
+  }
+
+
+  $(document).on('click', '.pronounce', function(){
+    var word = $(this).attr('data-word');
+    var lang = $(this).attr('data-lang');
+    pronounce(word, lang);
+  });
+
+  $(document).on('click', '.pronounce-btn', function(){
+    var c = $('.cards-rotator-container .flip-container').first();
+    var lang = c.hasClass('hover') ? 'ru-RU' : 'en-EN';
+    var word = c.hasClass('hover') ? c.find('.translation').text() : c.find('.source').text();
+    pronounce(word, lang);
+  });
+
 });
