@@ -3,7 +3,8 @@ $(function(){
     viewed: [],
     data: {
 
-    }
+    },
+    row: null
   };
   var loading = '<div class="loading"><img src="/images/loading.gif" alt="" /></div>';
   var done = '<div class="done"><img src="/images/done.gif" alt="" /></div>';
@@ -118,6 +119,8 @@ $(function(){
     }
   });
 
+  window.v = voca;
+
   
 
   var rotator = $('#rotator').cardsRotator({
@@ -231,7 +234,6 @@ $(function(){
     var data = $(this).serialize();
     var action = $(this).attr('action');
     $.post(action, data, function(res) {
-      console.log(res);
       if (res.result) {
         M.toast({html: 'Success.', classes: 'success'});
         if ( res.id ) {
@@ -246,12 +248,15 @@ $(function(){
               M.textareaAutoResize($('textarea'));
           });
 
-          // window.row = res.row;
-
           voca.row.add(res.row);
           voca.draw();
-
-          // window.location = '/edit?id='+res.id;
+        } else if (res.row && state.row) {
+          var tableRow = voca.row(state.row);
+          res.row[3] = voca.row(tableRow).data()[3]
+          voca
+              .row( tableRow )
+              .data(res.row)
+              .draw();
         }
       } else {
         M.toast({html: 'Error(s) occured.', classes: 'error'})
@@ -342,6 +347,7 @@ $(function(){
       if ( $('textarea').length )
         M.textareaAutoResize($('textarea'));
     })
+    state.row = $(this).parents('tr');
   });
 
 });
