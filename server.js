@@ -77,6 +77,7 @@ app.post('/edit', function(req, res, next) {
         result: true,
         affected: `Row(s) updated: ${this.changes}`
       });
+      console.log(this);
     });
   }
 });
@@ -102,11 +103,20 @@ app.post('/create', function(req, res, next) {
         });
       }
 
+      let row = [
+        `<label><input type="checkbox" class="check-word" value=${this.lastID} /><span></span></label>`,
+        data['source'],
+        data['translation'],
+        `<span class="new badge red" data-badge-caption="">must be learned</span>`,
+        `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
+      ];
+
       // res.redirect('/edit?id='+this.lastID);
       res.json({
         result: true,
         affected: `Row(s) updated: ${this.changes}`,
-        id: this.lastID
+        id: this.lastID,
+        row
       });
     });
 

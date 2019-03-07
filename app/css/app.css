@@ -214,3 +214,7 @@ tr.view td {
 .dataTables_wrapper .dataTables_filter input {
   margin-left: 0 !important;
 }
+
+#table tbody tr td:last-child {
+  text-align: right !important;
+}

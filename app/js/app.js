@@ -1,6 +1,9 @@
 $(function(){
   var state = {
-    viewed: []
+    viewed: [],
+    data: {
+
+    }
   };
   var loading = '<div class="loading"><img src="/images/loading.gif" alt="" /></div>';
   var done = '<div class="done"><img src="/images/done.gif" alt="" /></div>';
@@ -76,7 +79,7 @@ $(function(){
     $('.fixed-action-btn').floatingActionButton();
   });
 
-  $('#table').DataTable({
+  var voca = $('#table').DataTable({
     "columnDefs": [
       { "orderable": false, "targets": -1 },
       { "orderable": false, "targets": 0 }
@@ -114,6 +117,8 @@ $(function(){
         "thousands":        ","
     }
   });
+
+  
 
   var rotator = $('#rotator').cardsRotator({
     width: '700px',
@@ -197,10 +202,29 @@ $(function(){
 
   $(document).on('click', '.remove-this', function(e){
     var path = $(this).attr('data-href');
-    $.get(path);
-    $(this).parents('tr').remove();
+    // $.get(path);
+    // $(this).parents('tr').remove();
+    var parent = $(this).parents('tr');
+    var word = parent.find('td').eq(1).text();
+
+    state.data.parent = parent;
+    state.data.path = path;
+
+    var toastHTML = '<span>Do you want to remove the word "<b>'+word+'</b>"</span><button class="btn-flat toast-action remove-this-action">Remove</button>';
+    M.toast({html: toastHTML});
+
     e.preventDefault();
   });
+
+  $(document).on('click', '.remove-this-action', function(){
+    M.Toast.dismissAll();
+    $.get(state.data.path);
+    voca
+        .row( state.data.parent )
+        .remove()
+        .draw();
+    // state.data.parent.remove();
+  })
   
   $(document).on('submit', '.ajax-form', function(e){
     e.preventDefault();
@@ -220,7 +244,13 @@ $(function(){
 
             if ( $('textarea').length )
               M.textareaAutoResize($('textarea'));
-          })
+          });
+
+          // window.row = res.row;
+
+          voca.row.add(res.row);
+          voca.draw();
+
           // window.location = '/edit?id='+res.id;
         }
       } else {
@@ -247,7 +277,13 @@ $(function(){
     var ids = [];
 
     checkedWords.each(function(){
-      $(this).parents('tr').remove();
+      // $(this).parents('tr').remove();
+
+      voca
+        .row( $(this).parents('tr') )
+        .remove()
+        .draw();
+
       ids.push( $(this).val() );
     });
 
@@ -295,7 +331,7 @@ $(function(){
     });
   });
 
-  $('.load-content').click(function(){
+  $(document).on('click', '.load-content', function(){
     var href = $(this).attr('data-href');
     var c = $($(this).attr('data-c'));
     c.html(loading);

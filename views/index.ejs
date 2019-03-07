@@ -58,15 +58,9 @@
                 <% } %>
                 </td>
                 <td style="text-align: right;">
-                    <a class="dropdown-trigger btn-flat" data-target='dropdown<%= data[i]['id'] %>'><i class="material-icons">more_vert</i></a>
-                    <ul id='dropdown<%= data[i]['id'] %>' class='dropdown-content'>
-                        <li><a class="modal-trigger load-content" data-href="/view?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1">View</a></li>
-                        <li><a class="modal-trigger load-content" data-href="/edit?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1">Edit</a></li>
-                        
-                        <!-- <li><a href="/view?id=<%= data[i]['id'] %>">View</a></li> -->
-                        <!-- <li><a href="/edit?id=<%= data[i]['id'] %>">Edit</a></li> -->
-                        <li><a href="#" data-href="/remove?id=<%= data[i]['id'] %>" class="remove-this">Remove</a></li>
-                    </ul>
+                    <a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a>
+                    <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=<%= data[i]['id'] %>" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a>
+                    <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=<%= data[i]['id'] %>"><i class="material-icons dp48">clear</i></a>
                 </td>
             </tr>
         <% } %>
