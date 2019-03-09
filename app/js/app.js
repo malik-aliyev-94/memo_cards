@@ -1,3 +1,21 @@
+jQuery.each( [ "put", "delete" ], function( i, method ) {
+  jQuery[ method ] = function( url, data, callback, type ) {
+    if ( jQuery.isFunction( data ) ) {
+      type = type || callback;
+      callback = data;
+      data = undefined;
+    }
+
+    return jQuery.ajax({
+      url: url,
+      type: method,
+      dataType: type,
+      data: data,
+      success: callback
+    });
+  };
+});
+
 $(function(){
   var state = {
     viewed: [],
@@ -121,8 +139,6 @@ $(function(){
 
   window.v = voca;
 
-  
-
   var rotator = $('#rotator').cardsRotator({
     width: '700px',
     height: '400px'
@@ -132,14 +148,14 @@ $(function(){
     if ($(this).find('.front').length) {
       if ( $(this).hasClass('hover') ) {
         $(this).removeClass('hover');
-        $.post('/update', {
+        $.put('/update', {
           id: $(this).attr('data-id'),
           flip: 0,
           status: 1
         });
       } else {
         $(this).addClass('hover');
-        $.post('/update', {
+        $.put('/update', {
           id: $(this).attr('data-id'),
           flip: 1,
           status: 1
@@ -177,7 +193,7 @@ $(function(){
       fetch(0);
     }, 500);
     
-    $.post('/update', {
+    $.put('/update', {
       id: $('.flip-container').attr('data-id'),
       flip: $('.flip-container').hasClass('hover') ? 1 : 0,
       status: 2
@@ -221,7 +237,7 @@ $(function(){
 
   $(document).on('click', '.remove-this-action', function(){
     M.Toast.dismissAll();
-    $.get(state.data.path);
+    $.delete(state.data.path);
     voca
         .row( state.data.parent )
         .remove()
@@ -292,7 +308,7 @@ $(function(){
       ids.push( $(this).val() );
     });
 
-    $.get('/remove-selected?ids='+ids.join(','));
+    $.delete('/remove-selected?ids='+ids.join(','));
     $('#actions').hide();
   });
 
@@ -319,7 +335,7 @@ $(function(){
   $('.set-learned').click(function(e){
     e.preventDefault();
     
-    $.post('/update-status', {
+    $.put('/update-status', {
       status: 2
     }, function(){
       location.reload();
@@ -329,7 +345,7 @@ $(function(){
   $('.set-must').click(function(e){
     e.preventDefault();
     
-    $.post('/update-status', {
+    $.put('/update-status', {
       status: 0
     }, function(){
       location.reload();

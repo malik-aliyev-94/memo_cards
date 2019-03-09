@@ -1,6 +1,6 @@
-// server.js
 var express = require('express');
 var app = express();
+
 var bodyParser = require("body-parser");
 var path = require('path');
 var server = require('http').createServer(app);
@@ -9,20 +9,27 @@ var sqlite3 = require('sqlite3');
 var rp = require('request-promise');
 var $ = require('cheerio');
 
-// console.log(path.join(__dirname, '..', 'files', 'app.db'));
+
+
+// Database connection
 var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar', ''), (err) => {
   if (err) {
     return console.error(err.message);
   }
   console.log('Connected to the app database.');
 });
+
+// Express.js configurations & middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/app'));
 
+// Index page --> vocabulary
 app.get('/', function(req, res, next) {
+  return res.write('ok');
+
   db.all('SELECT * FROM vocabulary',[],(err, rows ) => {
     if (err) {
       res.render( 'index', {data: []});
@@ -48,112 +55,7 @@ app.get('/', function(req, res, next) {
   // res.render( 'index', {data: []});
 });
 
-app.get('/edit', function(req, res, next) {
-  var id = req.query.id ? parseInt(req.query.id) : 0;
-  db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
-    if (err) {
-      res.render( 'edit', {data: null});
-    }
-    res.render( 'edit', {data: row});
-  });
-});
-
-app.post('/edit', function(req, res, next) {
-  var id = req.query.id ? parseInt(req.query.id) : 0;
-  var data = req.body;
-  if (data.source.trim() === '' || data.translation.trim() === '') {
-    res.json({
-      result: false
-    });
-  } else {
-    db.run(`UPDATE vocabulary SET source=?, translit=?, translation=?, synonyms=?, antonyms=?, context=? WHERE id=?`, [data.source.trim(), data.translit.trim(), data.translation.trim(), data.synonyms.trim(), data.antonyms.trim(), data.context.trim(), id], function(err) {
-      if (err) {
-        console.log(err);
-        return res.json({
-          result: false
-        });
-      }
-
-      let row = [
-        `<label><input type="checkbox" class="check-word" value=${id} /><span></span></label>`,
-        data.source.trim(),
-        data.translation.trim(),
-        `-`,
-        `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${id}"><i class="material-icons dp48">clear</i></a>`
-      ];
-
-      res.json({
-        result: true,
-        affected: `Row(s) updated: ${this.changes}`,
-        row
-      });
-      console.log(this);
-    });
-  }
-});
-
-app.get('/create', function(req, res, next) {
-  res.render( 'create');
-});
-
-app.post('/create', function(req, res, next) {
-  var id = req.query.id ? parseInt(req.query.id) : 0;
-  var data = req.body;
-  if (data.source.trim() === '' || data.translation.trim() === '') {
-    res.json({
-      result: false
-    });
-  } else {
-
-    db.run(`INSERT INTO vocabulary(source, translit, translation, synonyms, antonyms, context) VALUES(?, ?, ?, ?, ?, ?)`, [data['source'], data['translit'], data['translation'], data['synonyms'], data['antonyms'], data['context']], function(err) {
-      if (err) {
-        console.log(err);
-        return res.json({
-          result: false
-        });
-      }
-
-      let row = [
-        `<label><input type="checkbox" class="check-word" value=${this.lastID} /><span></span></label>`,
-        data['source'],
-        data['translation'],
-        `<span class="new badge red" data-badge-caption="">must be learned</span>`,
-        `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
-      ];
-
-      // res.redirect('/edit?id='+this.lastID);
-      res.json({
-        result: true,
-        affected: `Row(s) updated: ${this.changes}`,
-        id: this.lastID,
-        row
-      });
-    });
-
-  }
-});
-
-app.get('/remove', function(req, res, next) {
-  var id = req.query.id ? parseInt(req.query.id) : 0;
-  db.run('DELETE FROM vocabulary WHERE id=?',[id],(err) => {
-    if (err) {
-      res.send('fail');
-    }
-    res.send('success');
-  });
-});
-
-app.get('/remove-selected', function(req, res, next) {
-  var ids = req.query.ids ? req.query.ids : 0;
-  db.run('DELETE FROM vocabulary WHERE id IN ('+ids+')', [] , (err) => {
-    if (err) {
-      console.log(err);
-      return res.send('fail');
-    }
-    res.send('success');
-  });
-});
-
+// View word
 app.get('/view', function(req, res, next) {
   var id = req.query.id ? parseInt(req.query.id) : 0;
   db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
@@ -164,22 +66,108 @@ app.get('/view', function(req, res, next) {
   });
 });
 
-app.get('/train', function(req, res, next) {
-  db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=1`, [], (err, row) => {
-    if (err) {
-      return console.log(err.message);
-    }
+// Add new word
+app.route('/create')
+  .get(function(req, res, next) {
+    res.render( 'create');
+  })
+  .post(function(req, res, next) {
+    var id = req.query.id ? parseInt(req.query.id) : 0;
+    var data = req.body;
+    if (data.source.trim() === '' || data.translation.trim() === '') {
+      res.json({
+        result: false
+      });
+    } else {
 
-    res.render('train', {
-      count: row['count']
+      db.run(`INSERT INTO vocabulary(source, translit, translation, synonyms, antonyms, context) VALUES(?, ?, ?, ?, ?, ?)`, [data['source'], data['translit'], data['translation'], data['synonyms'], data['antonyms'], data['context']], function(err) {
+        if (err) {
+          console.log(err);
+          return res.json({
+            result: false
+          });
+        }
+
+        let row = [
+          `<label><input type="checkbox" class="check-word" value=${this.lastID} /><span></span></label>`,
+          data['source'],
+          data['translation'],
+          `<span class="new badge red" data-badge-caption="">must be learned</span>`,
+          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
+        ];
+
+        // res.redirect('/edit?id='+this.lastID);
+        res.json({
+          result: true,
+          affected: `Row(s) updated: ${this.changes}`,
+          id: this.lastID,
+          row
+        });
+      });
+
+    }
+  });
+
+// Edit word
+app.route('/edit')
+  .get(function(req, res, next) {
+    var id = req.query.id ? parseInt(req.query.id) : 0;
+    db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
+      if (err) {
+        res.render( 'edit', {data: null});
+      }
+      res.render( 'edit', {data: row});
     });
+  })
+  .post(function(req, res, next) {
+    var id = req.query.id ? parseInt(req.query.id) : 0;
+    var data = req.body;
+    if (data.source.trim() === '' || data.translation.trim() === '') {
+      res.json({
+        result: false
+      });
+    } else {
+      db.run(`UPDATE vocabulary SET source=?, translit=?, translation=?, synonyms=?, antonyms=?, context=? WHERE id=?`, [data.source.trim(), data.translit.trim(), data.translation.trim(), data.synonyms.trim(), data.antonyms.trim(), data.context.trim(), id], function(err) {
+        if (err) {
+          console.log(err);
+          return res.json({
+            result: false
+          });
+        }
+
+        let row = [
+          `<label><input type="checkbox" class="check-word" value=${id} /><span></span></label>`,
+          data.source.trim(),
+          data.translation.trim(),
+          `-`,
+          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${id}"><i class="material-icons dp48">clear</i></a>`
+        ];
+
+        res.json({
+          result: true,
+          affected: `Row(s) updated: ${this.changes}`,
+          row
+        });
+        console.log(this);
+      });
+    }
+  });
+
+// Remove word
+app.delete('/remove', function(req, res, next) {
+  var id = req.query.id ? parseInt(req.query.id) : 0;
+  db.run('DELETE FROM vocabulary WHERE id=?',[id],(err) => {
+    if (err) {
+      res.send('fail');
+    }
+    res.send('success');
   });
 });
 
-app.post('/train', function(req, res, next) {
+// Remove selected words
+app.delete('/remove-selected', function(req, res, next) {
   var ids = req.query.ids ? req.query.ids : 0;
-  
-  db.run('UPDATE vocabulary SET status=1 WHERE id IN ('+ids+')', [] , (err) => {
+  db.run('DELETE FROM vocabulary WHERE id IN ('+ids+')', [] , (err) => {
     if (err) {
       console.log(err);
       return res.send('fail');
@@ -188,6 +176,32 @@ app.post('/train', function(req, res, next) {
   });
 });
 
+// Train new words
+app.route('/train')
+  .get(function(req, res, next) {
+    db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=1`, [], (err, row) => {
+      if (err) {
+        return console.log(err.message);
+      }
+
+      res.render('train', {
+        count: row['count']
+      });
+    });
+  })
+  .post(function(req, res, next) {
+    var ids = req.query.ids ? req.query.ids : 0;
+    
+    db.run('UPDATE vocabulary SET status=1 WHERE id IN ('+ids+')', [] , (err) => {
+      if (err) {
+        console.log(err);
+        return res.send('fail');
+      }
+      res.send('success');
+    });
+  });
+
+// Get random word
 app.get('/random', function(req, res, next) {
   var except = req.query.except ? req.query.except : '[]';
   var exceptArr = JSON.parse(except);
@@ -213,7 +227,8 @@ app.get('/random', function(req, res, next) {
   
 });
 
-app.post('/update', function(req, res, next) {
+// Update flip and status
+app.put('/update', function(req, res, next) {
   db.run(`UPDATE vocabulary SET flip=?, status=? WHERE id=?`, [req.body.flip, req.body.status, req.body.id], function(err) {
     if (err) {
       return console.error(err.message);
@@ -223,7 +238,8 @@ app.post('/update', function(req, res, next) {
   res.json([req.body, req.query]);
 });
 
-app.post('/update-status', function(req, res, next) {
+// Update status of selected words
+app.put('/update-status', function(req, res, next) {
   db.run(`UPDATE vocabulary SET status=?`, [req.body.status], function(err) {
     if (err) {
       return console.error(err.message);
@@ -233,6 +249,7 @@ app.post('/update-status', function(req, res, next) {
   res.json([req.body, req.query]);
 });
 
+// Scrap from vocabulary.com
 app.post('/scrap', function(req, res, next) {
   var id = req.body.id;
   // var id = 5;
@@ -261,7 +278,7 @@ app.post('/scrap', function(req, res, next) {
   });
 });
 
-
+// Socket connection
 io.on('connection', function(client) {
   console.log('Client connected...');
 
@@ -315,4 +332,5 @@ io.on('connection', function(client) {
 
 })
 
+// Listen to N port
 server.listen(4200);

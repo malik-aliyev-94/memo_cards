@@ -10,7 +10,7 @@ function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 900, 
-    height: 600, 
+    height: 700, 
     icon: path.join(__dirname, 'app/icons/png/64x64.png')
   })
 
