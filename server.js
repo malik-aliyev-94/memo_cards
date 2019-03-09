@@ -9,14 +9,12 @@ var sqlite3 = require('sqlite3');
 var rp = require('request-promise');
 var $ = require('cheerio');
 
-
-
 // Database connection
 var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar', ''), (err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Connected to the app database.');
+  console.log('database: Connected');
 });
 
 // Express.js configurations & middlewares
@@ -28,11 +26,9 @@ app.use(express.static(__dirname + '/app'));
 
 // Index page --> vocabulary
 app.get('/', function(req, res, next) {
-  return res.write('ok');
-
   db.all('SELECT * FROM vocabulary',[],(err, rows ) => {
     if (err) {
-      res.render( 'index', {data: []});
+      return res.render( 'index', {data: []});
     }
 
     var training = rows.filter((row) => {
@@ -60,7 +56,7 @@ app.get('/view', function(req, res, next) {
   var id = req.query.id ? parseInt(req.query.id) : 0;
   db.get('SELECT * FROM vocabulary WHERE id=?',[id],(err, row ) => {
     if (err) {
-      res.render( 'view', {data: null});
+      return res.render( 'view', {data: null});
     }
     res.render( 'view', {data: row});
   });
@@ -79,7 +75,6 @@ app.route('/create')
         result: false
       });
     } else {
-
       db.run(`INSERT INTO vocabulary(source, translit, translation, synonyms, antonyms, context) VALUES(?, ?, ?, ?, ?, ?)`, [data['source'], data['translit'], data['translation'], data['synonyms'], data['antonyms'], data['context']], function(err) {
         if (err) {
           console.log(err);
@@ -93,10 +88,11 @@ app.route('/create')
           data['source'],
           data['translation'],
           `<span class="new badge red" data-badge-caption="">must be learned</span>`,
-          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
+          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a>
+           <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> 
+           <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
         ];
 
-        // res.redirect('/edit?id='+this.lastID);
         res.json({
           result: true,
           affected: `Row(s) updated: ${this.changes}`,
@@ -104,7 +100,6 @@ app.route('/create')
           row
         });
       });
-
     }
   });
 
@@ -140,7 +135,9 @@ app.route('/edit')
           data.source.trim(),
           data.translation.trim(),
           `-`,
-          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${id}"><i class="material-icons dp48">clear</i></a>`
+          `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a> 
+           <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${id}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> 
+           <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${id}"><i class="material-icons dp48">clear</i></a>`
         ];
 
         res.json({
@@ -148,7 +145,6 @@ app.route('/edit')
           affected: `Row(s) updated: ${this.changes}`,
           row
         });
-        console.log(this);
       });
     }
   });
@@ -158,7 +154,7 @@ app.delete('/remove', function(req, res, next) {
   var id = req.query.id ? parseInt(req.query.id) : 0;
   db.run('DELETE FROM vocabulary WHERE id=?',[id],(err) => {
     if (err) {
-      res.send('fail');
+      return es.send('fail');
     }
     res.send('success');
   });
@@ -167,7 +163,7 @@ app.delete('/remove', function(req, res, next) {
 // Remove selected words
 app.delete('/remove-selected', function(req, res, next) {
   var ids = req.query.ids ? req.query.ids : 0;
-  db.run('DELETE FROM vocabulary WHERE id IN ('+ids+')', [] , (err) => {
+  db.run(`DELETE FROM vocabulary WHERE id IN (${ids})`, [] , (err) => {
     if (err) {
       console.log(err);
       return res.send('fail');
@@ -177,36 +173,24 @@ app.delete('/remove-selected', function(req, res, next) {
 });
 
 // Train new words
-app.route('/train')
-  .get(function(req, res, next) {
-    db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=1`, [], (err, row) => {
-      if (err) {
-        return console.log(err.message);
-      }
+app.get('/train', function(req, res, next) {
+  db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE status=1`, [], (err, row) => {
+    if (err) {
+      return console.log(err.message);
+    }
 
-      res.render('train', {
-        count: row['count']
-      });
-    });
-  })
-  .post(function(req, res, next) {
-    var ids = req.query.ids ? req.query.ids : 0;
-    
-    db.run('UPDATE vocabulary SET status=1 WHERE id IN ('+ids+')', [] , (err) => {
-      if (err) {
-        console.log(err);
-        return res.send('fail');
-      }
-      res.send('success');
+    res.render('train', {
+      count: row['count']
     });
   });
+});
 
 // Get random word
 app.get('/random', function(req, res, next) {
   var except = req.query.except ? req.query.except : '[]';
   var exceptArr = JSON.parse(except);
   var result = {};
-  db.get('SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=0) as count FROM vocabulary WHERE status=1 AND id NOT IN('+exceptArr.join(',')+') ORDER BY RANDOM() LIMIT 1', [], (err, row) => {
+  db.get(`SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=0) as count FROM vocabulary WHERE status=1 AND id NOT IN(${exceptArr.join(',')}) ORDER BY RANDOM() LIMIT 1`, [], (err, row) => {
     if (err) {
       return console.log(err.message);
     }
@@ -240,7 +224,8 @@ app.put('/update', function(req, res, next) {
 
 // Update status of selected words
 app.put('/update-status', function(req, res, next) {
-  db.run(`UPDATE vocabulary SET status=?`, [req.body.status], function(err) {
+  var ids = req.query.ids ? req.query.ids : 0;
+  db.run(`UPDATE vocabulary SET status=? WHERE id IN (${ids})`, [req.body.status], function(err) {
     if (err) {
       return console.error(err.message);
     }
@@ -280,18 +265,13 @@ app.post('/scrap', function(req, res, next) {
 
 // Socket connection
 io.on('connection', function(client) {
-  console.log('Client connected...');
+  console.log('socket: S client connected');
 
   client.on('join', function(data) {
     console.log(data);
   });
 
   client.on('add', function(data) {
-    // { 
-    //   source: 'contemporary',
-    //   translit: 'kənˈtempəˌrerē',
-    //   translation: 'современный' 
-    // }
     db.get(`SELECT COUNT(*) as count FROM vocabulary WHERE source="${data['source']}"`, [], (err, row) => {
       if (err) {
         client.emit('result', {
@@ -322,8 +302,20 @@ io.on('connection', function(client) {
             message: 'New source have been inserted.',
             id: this.lastID
           });
+
+          let row = [
+            `<label><input type="checkbox" class="check-word" value=${this.lastID} /><span></span></label>`,
+            data['source'],
+            data['translation'],
+            `<span class="new badge red" data-badge-caption="">must be learned</span>`,
+            `<a style="padding: 0 8px;" class="btn btn-small blue modal-trigger load-content" data-href="/view?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">description</i></a>
+             <a style="padding: 0 8px;" class="btn btn-small orange modal-trigger load-content" data-href="/edit?id=${this.lastID}" data-c=".modal-content" href="#modal1"><i class="material-icons dp48">edit</i></a> 
+             <a style="padding: 0 8px;" class="btn btn-small black remove-this" href="#" data-href="/remove?id=${this.lastID}"><i class="material-icons dp48">clear</i></a>`
+          ];
+          
           io.emit('new-word', {
-            source: data['source']
+            source: data['source'],
+            row
           });
         });
       }

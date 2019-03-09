@@ -1,3 +1,4 @@
+// Extend jQuery to make shortcuts for PUT and DELETE
 jQuery.each( [ "put", "delete" ], function( i, method ) {
   jQuery[ method ] = function( url, data, callback, type ) {
     if ( jQuery.isFunction( data ) ) {
@@ -16,65 +17,91 @@ jQuery.each( [ "put", "delete" ], function( i, method ) {
   };
 });
 
-$(function(){
-  var state = {
-    viewed: [],
-    data: {
+var state = {
+  viewed: [],
+  data: {
 
-    },
-    row: null
-  };
-  var loading = '<div class="loading"><img src="/images/loading.gif" alt="" /></div>';
-  var done = '<div class="done"><img src="/images/done.gif" alt="" /></div>';
+  },
+  row: null
+};
 
-  function fetch() {
-    $('#train-actions').hide();
-    $('#modal2 .vocabulary-data').html('');
-    var c = $('#rotator .flip-container').eq(0);
-    c.html('<div class="flipper"><div class="flex card">'+loading+'<p>Loading...</p></div></div>');
-    $.get('/random', {except: JSON.stringify(state.viewed)}, function(res){
-      if ( res.empty ) {
-        if ( state.viewed.length ) {
-          state.viewed = [];
-          fetch();
-        } else {
-          $('#rotator .flip-container').not(':first').remove();
-          c.html('<div class="flipper"><div class="flex card">'+done+'<p>Learning completed.</p></div></div>');
-        }
+var loading = '<div class="loading"><img src="/images/loading.gif" alt="" /></div>';
+var done    = '<div class="done"><img src="/images/done.gif" alt="" /></div>';
+
+var rotator = $('#rotator').cardsRotator({
+  width: '700px',
+  height: '400px'
+});
+
+function fetch() {
+  $('#train-actions').hide();
+  $('#modal2 .vocabulary-data').html('');
+  var c = $('#rotator .flip-container').eq(0);
+  c.html('<div class="flipper"><div class="flex card">'+loading+'<p>Loading...</p></div></div>');
+  $.get('/random', {except: JSON.stringify(state.viewed)}, function(res){
+    if ( res.empty ) {
+      if ( state.viewed.length ) {
+        state.viewed = [];
+        fetch();
       } else {
-        var data = res.data;
-        state.viewed.push(data.id);
-        var block = 
-        '<div class="flip-container'+(data.flip ? ' hover' : '')+'" data-id="'+data.id+'">'+
-          '<div class="flipper">'+
-            '<div class="front card">'+
-              '<span class="source">'+data.source+'</span>'+
-              '<span class="translit">['+data.translit+']</span>'+
-            '</div>'+
-            '<div class="back card">'+
-              '<span class="translation">'+data.translation+'</span>'+
-            '</div>'+
-          '</div>'+
-        '</div>';
-
-        setTimeout(function(){
-          c.replaceWith(block);
-          $('#rotator .flip-container').eq(1).html('<div class="flipper"><div class="flex card">'+loading+'<p>Loading...</p></div></div>');
-          rotator.calc();
-        }, 500);
-        
-        $('#modal2 .vocabulary-data').html(data.examples);
-        $('#modal2 .modal-footer a').first().attr('data-id', data.id);
-        $('#train-actions').show();
-        if (data.count < 2) {
-          $('#train-actions>*').last().hide();
-        } else {
-          $('#train-actions>*').last().show();
-        }
+        $('#rotator .flip-container').not(':first').remove();
+        c.html('<div class="flipper"><div class="flex card">'+done+'<p>Learning completed.</p></div></div>');
       }
-    });
-  }
+    } else {
+      var data = res.data;
+      state.viewed.push(data.id);
+      var block = 
+      '<div class="flip-container'+(data.flip ? ' hover' : '')+'" data-id="'+data.id+'">'+
+        '<div class="flipper">'+
+          '<div class="front card">'+
+            '<span class="source">'+data.source+'</span>'+
+            '<span class="translit">['+data.translit+']</span>'+
+          '</div>'+
+          '<div class="back card">'+
+            '<span class="translation">'+data.translation+'</span>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
 
+      setTimeout(function(){
+        c.replaceWith(block);
+        $('#rotator .flip-container').eq(1).html('<div class="flipper"><div class="flex card">'+loading+'<p>Loading...</p></div></div>');
+        rotator.calc();
+      }, 500);
+      
+      $('#modal2 .vocabulary-data').html(data.examples);
+      $('#modal2 .modal-footer a').first().attr('data-id', data.id);
+      $('#train-actions').show();
+      if (data.count < 2) {
+        $('#train-actions>*').last().hide();
+      } else {
+        $('#train-actions>*').last().show();
+      }
+    }
+  });
+}
+
+function pronounce(word, lang) {
+  var msg = new SpeechSynthesisUtterance(word);
+  if (lang) msg.lang = lang; //'ru-RU'
+  window.speechSynthesis.speak(msg);
+}
+
+function getChecked(asStr = false) {
+  var checkedWords = $('.check-word:checked');
+  var ids = [];
+
+  checkedWords.each(function(){
+    ids.push( $(this).val() );
+  });
+
+  if ( asStr ) return ids.join(',');
+
+  return ids;
+}
+
+$(function(){
+  
   fetch();
 
   $(document).on('click', '.action-reload', function(){
@@ -83,7 +110,7 @@ $(function(){
 
   var socket = io.connect('http://localhost:4200');
   socket.on('connect', function(data) {
-      socket.emit('join', 'Hello World from client');
+      socket.emit('join', 'socket: F client connected');
   });
 
   socket.on('new-word', function(data) {
@@ -91,8 +118,14 @@ $(function(){
     if ( c.length ) {
       c.find('b').text(data['source']);
       c.show();
+      voca.row.add(data['row']);
+      voca.draw();
     }
   });
+
+  $(document).on('click', '.action-close-new', function(){
+    $('#new-word').hide();
+  })
 
   $(document).ready(function(){
     $('.fixed-action-btn').floatingActionButton();
@@ -135,13 +168,6 @@ $(function(){
         "decimal":          "",
         "thousands":        ","
     }
-  });
-
-  window.v = voca;
-
-  var rotator = $('#rotator').cardsRotator({
-    width: '700px',
-    height: '400px'
   });
 
   $(document).on('click', '.flip-container', function(){
@@ -312,30 +338,18 @@ $(function(){
     $('#actions').hide();
   });
 
-  $(document).on('click', '.train-selected', function(){
-    var checkedWords = $('.check-word:checked');
-    var ids = [];
-
-    checkedWords.each(function(){
-      ids.push( $(this).val() );
+  $(document).on('click', '.train-selected', function(e){
+    e.preventDefault();
+    $.put('/update-status?ids='+getChecked(true), {
+      status: 1
+    }, function(){
+      location.reload();
     });
-
-    $.post('/train?ids='+ids.join(','), function(res) {
-      if ( res == 'success') {
-        $('#actions').hide();
-        window.location = '/train';
-      } else {
-        M.toast({html: 'Error(s) occured.', classes: 'error'})
-      }
-    });
-    
   });
 
-  // set-learned, set-must
   $('.set-learned').click(function(e){
     e.preventDefault();
-    
-    $.put('/update-status', {
+    $.put('/update-status?ids='+getChecked(true), {
       status: 2
     }, function(){
       location.reload();
@@ -344,8 +358,7 @@ $(function(){
 
   $('.set-must').click(function(e){
     e.preventDefault();
-    
-    $.put('/update-status', {
+    $.put('/update-status?ids='+getChecked(true), {
       status: 0
     }, function(){
       location.reload();
@@ -365,14 +378,6 @@ $(function(){
     })
     state.row = $(this).parents('tr');
   });
-
-
-  function pronounce(word, lang) {
-    var msg = new SpeechSynthesisUtterance(word);
-    if (lang) msg.lang = lang; //'ru-RU'
-    window.speechSynthesis.speak(msg);
-  }
-
 
   $(document).on('click', '.pronounce', function(){
     var word = $(this).attr('data-word');
