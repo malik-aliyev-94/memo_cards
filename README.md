@@ -34,6 +34,9 @@ After running `npm dist` you can run **memo_cards.app** (on MacOS). This will al
 Browser extensions for Chrome (chrome-ext) and Safari (VocaExt.safariextension) are also available. 
 These extensions needed to easily add new words from translate.google.com
 
+1. [How to install chrome extension]()
+2. [How to install safari extension]()
+
 Once you have translated the word, you can click the extension button on toolbar and save the new word to your vocabulary. 
 
 You can also run only web app (without electron). 
@@ -51,7 +54,7 @@ As a database SQLITE have been used. You can read more about how to use sqlite w
 
 Give attntion to the database connection in server.js file
 
-`
+```javascript
 // Database connection
 var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar', ''), (err) => {
   if (err) {
@@ -59,13 +62,15 @@ var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar'
   }
   console.log('database: Connected');
 });
-`
+```
 
 `path.join(__dirname, 'app.db').replace('/app.asar', '')` have been used to solve **db-file is not found within app.asar** problem (Electron sqlite3 issue after packaging app).
 
 As a front-end framework [materialize](http://materializecss.com/) have been used.
 
+You can scrap content from [vocabulary.com](https://www.vocabulary.com) after new word have been added. 
 
+Read more about Web Scraping with NodeJS --> [Parsing HTML with Cheerio.js](https://medium.freecodecamp.org/the-ultimate-guide-to-web-scraping-with-node-js-daa2027dcd3)
 
 ## License
 
