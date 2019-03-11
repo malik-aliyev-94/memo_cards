@@ -36,6 +36,35 @@ These extensions needed to easily add new words from translate.google.com
 
 Once you have translated the word, you can click the extension button on toolbar and save the new word to your vocabulary. 
 
+You can also run only web app (without electron). 
+
+`node ./server.js` or `nodemon ./server.js`
+
+To run Node.js server file automatically after launching Electron App, 
+
+`require('./server');` and `mainWindow.loadURL('http://localhost:4200')`
+
+lines are added to `main.js` electron app file.
+
+As a database SQLITE have been used. You can read more about how to use sqlite with nodejs from [here](http://www.sqlitetutorial.net/sqlite-nodejs/)
+
+
+Give attntion to the database connection in server.js file
+
+`
+// Database connection
+var db = new sqlite3.Database(path.join(__dirname, 'app.db').replace('/app.asar', ''), (err) => {
+  if (err) {
+    return console.error(err.message);
+  }
+  console.log('database: Connected');
+});
+`
+
+`path.join(__dirname, 'app.db').replace('/app.asar', '')` have been used to solve **db-file is not found within app.asar** problem (Electron sqlite3 issue after packaging app).
+
+As a front-end framework [materialize](http://materializecss.com/) have been used.
+
 
 
 ## License
