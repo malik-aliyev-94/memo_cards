@@ -3,11 +3,15 @@ var connected = false;
 
 socket.on('connect', function(data) {
     connected = true;
+    document.querySelector('#conn').style.color = 'green';
+    document.querySelector('#conn').innerHTML = 'Connected';
     socket.emit('join', 'Hello World from client - chrome ext');
 });
 
 socket.on('connect_error', function(err) {
     connected = false;
+    document.querySelector('#conn').style.color = 'red';
+    document.querySelector('#conn').innerHTML = 'Not connected';
     console.log('can not connect');
 });
 
