@@ -4,6 +4,8 @@
 
 This is an Electron application based on the [Electron Quick Start Guide](https://github.com/electron/electron-quick-start).
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FPTfWYo9O4E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 A basic Electron application files:
 
 - `package.json` - Points to the app's main file and lists its details and dependencies.
@@ -34,8 +36,8 @@ After running `npm dist` you can run **memo_cards.app** (on MacOS). This will al
 Browser extensions for Chrome (chrome-ext) and Safari (VocaExt.safariextension) are also available. 
 These extensions needed to easily add new words from translate.google.com
 
-1. [How to install chrome extension]()
-2. [How to install safari extension]()
+1. [How to install chrome extension](https://youtu.be/9ohZIh-nSyU)
+2. [How to install safari extension](https://youtu.be/O1vm1kRP25I)
 
 Once you have translated the word, you can click the extension button on toolbar and save the new word to your vocabulary. 
 
