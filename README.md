@@ -4,7 +4,7 @@
 
 This is an Electron application based on the [Electron Quick Start Guide](https://github.com/electron/electron-quick-start).
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/FPTfWYo9O4E" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Memo Cards](app/images/yt.png)](https://www.youtube.com/watch?v=FPTfWYo9O4E)
 
 A basic Electron application files:
 
