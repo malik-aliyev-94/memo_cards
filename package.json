@@ -1,7 +1,7 @@
 {
   "name": "memo_cards",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Learn vocabulary faster using flashcards",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -10,15 +10,17 @@
     "postinstall": "install-app-deps",
     "rebuild": "electron-rebuild -f -w sqlite3"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/malik-aliyev-94/memo_cards",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "nodejs",
+    "socket.io",
+    "chrome",
+    "safari",
+    "extension",
+    "scrap"
   ],
-  "author": "GitHub",
+  "author": "Malik Aliyev",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^3.0.4",
