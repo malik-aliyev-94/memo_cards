@@ -190,7 +190,7 @@ app.get('/random', function(req, res, next) {
   var except = req.query.except ? req.query.except : '[]';
   var exceptArr = JSON.parse(except);
   var result = {};
-  db.get(`SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=0) as count FROM vocabulary WHERE status=1 AND id NOT IN(${exceptArr.join(',')}) ORDER BY RANDOM() LIMIT 1`, [], (err, row) => {
+  db.get(`SELECT *, (SELECT COUNT(*) as count FROM vocabulary WHERE status=1) as count FROM vocabulary WHERE status=1 AND id NOT IN(${exceptArr.join(',')}) ORDER BY RANDOM() LIMIT 1`, [], (err, row) => {
     if (err) {
       return console.log(err.message);
     }
